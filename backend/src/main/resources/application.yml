@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: hannahpay-backend
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-me-change-me-change-me-change-me}
+      access-token-ttl-seconds: ${JWT_ACCESS_TOKEN_TTL_SECONDS:3600}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hannahpay}
+    username: ${SPRING_DATASOURCE_USERNAME:hannahpay}
+    password: ${SPRING_DATASOURCE_PASSWORD:hannahpay}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+logging:
+  level:
+    com.hannahpay: INFO

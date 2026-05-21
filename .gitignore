@@ -1,0 +1,23 @@
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Gradle
+**/build/
+**/.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Logs and reports
+*.log
+**/reports/
+**/test-results/
+
+# Local environment
+.env
+.env.*
