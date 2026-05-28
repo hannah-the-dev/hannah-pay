@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+commit_msg_file="$1"
+first_line="$(head -n 1 "$commit_msg_file")"
+
+case "$first_line" in
+  \[feature\]*|\[fix\]*|\[refactor\]*|\[test\]*|\[docs\]*|\[chore\]*|\[build\]*|\[ci\]*)
+    ;;
+  *)
+    echo "ERROR: 커밋 메시지 형식이 규칙에 맞지 않습니다."
+    echo "Required: [type] message"
+    echo "Allowed types: feature, fix, refactor, test, docs, chore, build, ci"
+    exit 1
+    ;;
+esac

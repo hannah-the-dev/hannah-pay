@@ -77,7 +77,7 @@ HannahPay는 사용자 간 송금 및 가맹점 결제를 지원하는 간편결
 
 | 구분 | 기술 |
 |---|---|
-| Language | Java 17 |
+| Language | Java 23 |
 | Framework | Spring Boot |
 | ORM | JPA / Hibernate |
 | Message Queue | Kafka |

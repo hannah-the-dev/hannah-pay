@@ -33,7 +33,7 @@ Avoid unnecessary complexity.
 
 | Category | Stack |
 |---|---|
-| Language | Java 17 |
+| Language | Java 23 |
 | Framework | Spring Boot |
 | Build Tool | Gradle |
 | Database | PostgreSQL |
