@@ -1,0 +1,111 @@
+name: user-api-postman
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'hotfix/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  postman:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: hannah
+          POSTGRES_DB: hannahpay
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d hannahpay"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/hannahpay
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: hannah
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      JWT_SECRET: change-me-change-me-change-me-change-me
+      JWT_ACCESS_TOKEN_TTL_SECONDS: "3600"
+      BASE_URL: http://localhost:8080
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '23'
+          cache: gradle
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run backend tests
+        working-directory: backend
+        run: ./gradlew test
+
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-junitfull
+
+      - name: Start application
+        working-directory: backend
+        run: |
+          ./gradlew bootRun > ../app.log 2>&1 &
+          echo $! > ../app.pid
+
+      - name: Wait for application
+        run: |
+          for i in {1..60}; do
+            if timeout 1 bash -c "</dev/tcp/localhost/8080" >/dev/null 2>&1; then
+              echo "Application is ready"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Application did not become ready"
+          cat app.log
+          exit 1
+
+      - name: Run Postman collection
+        run: |
+          newman run postman/collections/hannahpay-user.postman_collection.json \
+            -e postman/environments/hannahpay-user.postman_environment.json \
+            --env-var "baseUrl=$BASE_URL" \
+            --reporters cli,junitfull \
+            --reporter-junitfull-export newman-results.xml
+
+      - name: Upload application log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-log
+          path: app.log
+
+      - name: Upload Newman JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-junit-report
+          path: newman-results.xml
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill "$(cat app.pid)" || true
+          fi

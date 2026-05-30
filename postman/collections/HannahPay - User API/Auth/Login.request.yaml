@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/users/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{loginEmail}}",
+      "password": "{{loginPassword}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const email = pm.collectionVariables.get('loginEmail') || pm.collectionVariables.get('signupEmail');
+      if (email) {
+        pm.collectionVariables.set('loginEmail', email);
+      }
+      pm.collectionVariables.set('loginPassword', pm.collectionVariables.get('loginPassword') || pm.collectionVariables.get('signupPassword') || 'password123');
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('response has accessToken and user', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property('accessToken');
+        pm.expect(json).to.have.property('user');
+      });
+
+      const json = pm.response.json();
+      pm.collectionVariables.set('accessToken', json.accessToken);
+      pm.collectionVariables.set('userId', json.user.id);
+      pm.collectionVariables.set('userEmail', json.user.email);
+    language: text/javascript
+order: 2000

@@ -1,0 +1,26 @@
+# Use this workspace to collaborate
+workspace:
+  id: 84b46824-eaeb-4be4-8dfe-e65a7c717668
+
+localResources:
+  collections:
+    - ..\postman\collections\hannahpay-user.postman_collection.json
+  environments: []
+  docs:
+    - ..\postman\docs\README.md
+    - ..\agents\tester.md
+    - ..\docs\hannahpay-desgine.md
+    - ..\docs\git-hooks.md
+    - ..\docs\customer-user-table-proposal.md
+    - ..\docs\customer-domain-db-schema.md
+    - ..\agents\backend-developer.md
+    - ..\agents\reviewer.md
+    - ..\README.md
+    - ..\agents\architect.md
+    - ..\AGENTS.md
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ..\postman\collections\HannahPay - User API: f6b0db7d-4c40-4d1e-9f8d-8e4c4a4f7c10

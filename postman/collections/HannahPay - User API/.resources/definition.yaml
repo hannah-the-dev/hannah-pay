@@ -1,0 +1,12 @@
+$kind: collection
+name: HannahPay - User API
+description: User auth and profile collection for manual use and CI/newman runs.
+variables:
+  signupEmail: ""
+  loginEmail: ""
+  signupPassword: ""
+  loginPassword: ""
+  signupFullName: ""
+  accessToken: ""
+  userId: ""
+  userEmail: ""

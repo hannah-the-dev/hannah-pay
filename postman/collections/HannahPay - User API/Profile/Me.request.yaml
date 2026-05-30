@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/users/me"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: beforeRequest
+    code: "pm.request.headers.upsert({ key: 'Authorization', value: 'Bearer ' + pm.collectionVariables.get('accessToken') });"
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('response has user', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property('user');
+        pm.expect(json.user).to.have.property('id');
+        pm.expect(json.user).to.have.property('email');
+      });
+    language: text/javascript
+order: 1000

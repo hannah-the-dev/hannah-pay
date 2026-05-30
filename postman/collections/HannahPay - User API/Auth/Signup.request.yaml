@@ -1,0 +1,47 @@
+$kind: http-request
+name: Signup
+url: "{{baseUrl}}/users/signup"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{signupEmail}}",
+      "password": "{{signupPassword}}",
+      "fullName": "{{signupFullName}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const uniqueSuffix = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      const emailPrefix = pm.environment.get('emailPrefix') || 'test-user';
+      const email = `${emailPrefix}-${uniqueSuffix}@example.com`;
+      const namePrefix = pm.environment.get('namePrefix') || 'Test User';
+      const name = `${namePrefix} ${uniqueSuffix}`;
+
+      pm.collectionVariables.set('signupEmail', email);
+      pm.collectionVariables.set('loginEmail', email);
+      pm.collectionVariables.set('signupFullName', name);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('status is 201', function () {
+        pm.response.to.have.status(201);
+      });
+
+      pm.test('response has accessToken and user', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property('accessToken');
+        pm.expect(json).to.have.property('user');
+        pm.expect(json.user).to.have.property('id');
+        pm.expect(json.user).to.have.property('email');
+      });
+
+      const json = pm.response.json();
+      pm.collectionVariables.set('accessToken', json.accessToken);
+      pm.collectionVariables.set('userId', json.user.id);
+      pm.collectionVariables.set('userEmail', json.user.email);
+    language: text/javascript
+order: 1000
