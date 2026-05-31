@@ -27,3 +27,12 @@ docker-compose.override.yml
 docker-compose.local.yml
 backend/.env
 backend/.env.*
+
+# Tooling and generated Postman artifacts
+.tools/node_modules/
+.tools/*.collection.json
+.tools/*.environment.json
+.tools/probe.collection.json
+docs/postman/*.json
+postman/collections/*.postman_collection.json
+postman/environments/*.postman_environment.json
