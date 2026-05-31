@@ -1,0 +1,28 @@
+$kind: http-request
+name: Withdraw
+url: "{{baseUrl}}/users/me"
+method: DELETE
+headers:
+  Accept: application/json
+scripts:
+  - type: beforeRequest
+    code: "pm.request.headers.upsert({ key: 'Authorization', value: 'Bearer ' + pm.collectionVariables.get('accessToken') });"
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('status is 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('response has withdrawn user', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.property('user');
+        pm.expect(json.user).to.have.property('id');
+        pm.expect(json.user).to.have.property('email');
+      });
+
+      const json = pm.response.json();
+      pm.collectionVariables.set('userId', json.user.id);
+      pm.collectionVariables.set('userEmail', json.user.email);
+    language: text/javascript
+order: 2000

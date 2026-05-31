@@ -8,12 +8,14 @@ Files:
 - `POST /users/signup`
 - `POST /users/login`
 - `GET /users/me`
+- `DELETE /users/me`
 
 ## How to use
 1. Import both JSON files into Postman.
 2. Select the `HannahPay Local` environment.
 3. Run `Signup` or `Login` first to populate `accessToken`.
 4. Run `Me` to verify authenticated profile access.
+5. Run `Withdraw` to verify authenticated account withdrawal.
 
 The signup flow generates a unique email per run, so the same asset set can be reused repeatedly in CI and manual testing.
 

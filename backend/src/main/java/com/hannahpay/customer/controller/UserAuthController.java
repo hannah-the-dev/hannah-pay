@@ -1,22 +1,14 @@
 package com.hannahpay.customer.controller;
 
-import com.hannahpay.customer.dto.AuthResponse;
-import com.hannahpay.customer.dto.CurrentUserResponse;
-import com.hannahpay.customer.dto.LoginRequest;
-import com.hannahpay.customer.dto.SignupRequest;
-import com.hannahpay.customer.dto.UserResponse;
 import com.hannahpay.common.security.JwtPrincipal;
+import com.hannahpay.customer.dto.*;
 import com.hannahpay.customer.service.UserAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +30,10 @@ public class UserAuthController {
     @GetMapping("/me")
     public ResponseEntity<CurrentUserResponse> me(@AuthenticationPrincipal JwtPrincipal principal) {
         return ResponseEntity.ok(CurrentUserResponse.from(userAuthService.getCurrentUser(principal.userId())));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<CurrentUserResponse> withdraw(@AuthenticationPrincipal JwtPrincipal principal) {
+        return ResponseEntity.ok(CurrentUserResponse.from(userAuthService.withdraw(principal.userId())));
     }
 }

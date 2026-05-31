@@ -69,9 +69,9 @@ public class User {
         this.status = UserStatus.SUSPENDED;
     }
 
-    public void withdraw(OffsetDateTime withdrawnAt) {
+    public void withdraw() {
         this.status = UserStatus.WITHDRAWN;
-        this.deletedAt = withdrawnAt;
+        this.deletedAt = OffsetDateTime.now();
     }
 
     private static String normalizeEmail(String email) {
